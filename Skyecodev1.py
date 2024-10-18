@@ -14,9 +14,9 @@ import webbrowser
 import bluetooth
 import threading
 import RPi.GPIO as GPIO
-import mss  # For screen capturing
+import mss  # For screen capturing (Daily meeting)
 
-# ==================== Configuration ====================
+# Configuration
 TAVUS_API_KEY = 'your-tavus-api-key'
 TAVUS_API_URL = "https://tavusapi.com/v2/conversations"
 REPLICA_ID = "re8e740a42"
@@ -31,15 +31,6 @@ BLUETOOTH_ADDRESS = "XX:XX:XX:XX:XX:XX"  # Replace with MAC address of Seeed dev
 
 # Hall Sensor Configuration
 HALL_SENSOR_PIN = 17
-
-# LED Strip Configuration
-LED_COUNT = 70
-LED_PIN = 21
-LED_FREQ_HZ = 800000
-LED_DMA = 10
-LED_BRIGHTNESS = 50
-LED_INVERT = False
-LED_CHANNEL = 0
 
 # Initialization
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -57,7 +48,7 @@ motor_running = False
 current_rotation = 0  # To keep track of motor rotations
 TOTAL_ROTATIONS = 10  # Adjust as needed
 
-# ==================== Helper Functions ====================
+# Helper Functions
 
 def recognize_speech():
     """Recognizes speech using Google API"""
@@ -139,7 +130,7 @@ async def tavus_cvi_meeting(conversation_url):
         os.system("pkill -f chromium")
         logger.info("Call ended.")
 
-# ==================== Video Processing and POV Display ====================
+# Video Processing and POV Display
 
 def capture_browser_window():
     """Capture the screen where the Tavus video is displayed"""
@@ -162,7 +153,7 @@ def process_frame_for_pov(frame):
     processed_frame = cv2.resize(frame, (64, 64))  # Adjust resolution as needed
     return processed_frame.tobytes()
 
-# ==================== Motor Synchronization ====================
+# Motor Synchronization
 
 def motor_sync():
     """Synchronizes motor rotation with POV frame display"""
@@ -181,7 +172,7 @@ def send_next_frame_slice():
     frame_slice = get_frame_slice(current_rotation)
     send_to_seeed_bluetooth(frame_slice)
 
-# ==================== Bluetooth Communication ====================
+# Bluetooth Communication
 
 def send_to_seeed_bluetooth(data):
     """Sends data to the Seeed device via Bluetooth"""
@@ -196,7 +187,7 @@ def send_to_seeed_bluetooth(data):
     finally:
         sock.close()
 
-# ==================== Graceful Shutdown ====================
+# Graceful Shutdown
 
 def cleanup():
     """Graceful cleanup of resources"""
@@ -207,7 +198,7 @@ def cleanup():
     GPIO.cleanup()
     logger.info("Cleanup complete. Exiting.")
 
-# ==================== Main Loop ====================
+# Main Loop
 
 async def main():
     """Main execution loop"""
